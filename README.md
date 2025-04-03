@@ -5,6 +5,7 @@ Because of its ensemble-style design, models trained to find a specific class of
 
 ### Currently, can identify:
 1. Li-Ion polymer phone batteries
+2. Li-Ion phone batteries
 
 ________________
 
