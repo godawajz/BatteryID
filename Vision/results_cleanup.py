@@ -29,7 +29,7 @@ def find_battery_info(text) -> list[list[str | float]]:
                 if contains and ratio > max_ratio:
                     to_append = ("Battery type: " + battery)
                     max_ratio = ratio
-        relevant_info.append([to_append, ratio])
+        relevant_info.append([to_append, max_ratio])
     return relevant_info  # Empty if value not found
 
 

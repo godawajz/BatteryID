@@ -10,7 +10,7 @@ import ast
 import json
 
 
-DEBUG_CONSOLE_OUTPUT : Final[bool] = True
+DEBUG_CONSOLE_OUTPUT : Final[bool] = False
 
 def initialize_engines() -> tuple[InferenceHTTPClient, OpenOCR]:
     CLIENT = InferenceHTTPClient(
@@ -31,7 +31,6 @@ def send_image_battery(battery_client: InferenceHTTPClient, img_path: str, model
 
 
 def send_image_label(onnx_engine : OpenOCR, img_path : str) -> tuple[list[str | float], float] :
-    print("reached")
     result2_temp, elapse=onnx_engine(img_path)
     results2: list[str | float] = rc.find_battery_info(result2_temp[0])[0] # because we work with only one battery, only use first
     if DEBUG_CONSOLE_OUTPUT:
@@ -69,11 +68,12 @@ def execute(img_path: str) -> json:
 
     label_result, time = openOCR_results
 
-    return make_JSON(inference_results, label_result[0], label_result[1])
+    return make_JSON(inference_results, label_result[0], round(label_result[1], 2))
 
 
 def main():
-    execute('test.jpg')
+    analysis: json = execute('test.jpg')
+    print(analysis)
 
 
 if __name__ == "__main__":
