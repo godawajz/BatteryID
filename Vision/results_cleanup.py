@@ -27,9 +27,11 @@ def find_battery_info(text) -> list[list[str | float]]:
             for battery in RECOGNIZED_BATTERIES:
                 contains, ratio = contains_ignore_case_spaces(item_processed, battery)
                 if contains and ratio > max_ratio:
+                    print(battery)
                     to_append = ("Battery type: " + battery)
                     max_ratio = ratio
-            relevant_info.append([to_append, ratio])
+        relevant_info.append([to_append, ratio])
+    print(relevant_info)
     return relevant_info  # Empty if value not found
 
 
