@@ -12,7 +12,7 @@ import json
 
 DEBUG_CONSOLE_OUTPUT : Final[bool] = True
 
-def initialize_engines(battery_client: InferenceHTTPClient, onnx_engine: OpenOCR):
+def initialize_engines() -> tuple[InferenceHTTPClient, OpenOCR]:
     CLIENT = InferenceHTTPClient(
         api_url="https://detect.roboflow.com",
         api_key="GI8YLPD35TOSADzsK9QH"
@@ -20,7 +20,7 @@ def initialize_engines(battery_client: InferenceHTTPClient, onnx_engine: OpenOCR
     # OpenOCR engine, for text recognition
     onnx_engine = OpenOCR(backend='onnx', device='cpu')
 
-    return battery_client, onnx_engine
+    return CLIENT, onnx_engine
 
 
 def send_image_battery(battery_client: InferenceHTTPClient, img_path: str, model_id: str) -> str:
@@ -31,11 +31,12 @@ def send_image_battery(battery_client: InferenceHTTPClient, img_path: str, model
 
 
 def send_image_label(onnx_engine : OpenOCR, img_path : str) -> tuple[list[str | float], float] :
+    print("reached")
     result2_temp, elapse=onnx_engine(img_path)
     results2: list[str | float] = rc.find_battery_info(result2_temp[0])[0] # because we work with only one battery, only use first
     if DEBUG_CONSOLE_OUTPUT:
-        for result, ratio in results2:
-            print("Label result: ", result)
+        for result in results2:
+            print(result)
     return results2, elapse
 
 
@@ -49,8 +50,8 @@ def make_JSON(battery_type: str, label_result: str, confidence: float) -> json:
 
 
 def execute(img_path: str) -> json:
-    CLIENT: InferenceHTTPClient = None  # Roboflow client, for battery detection
-    onnx_engine: OpenOCR = None  # OpenOCR engine, for text recognition
+    CLIENT: InferenceHTTPClient # Roboflow client, for battery detection
+    onnx_engine: OpenOCR  # OpenOCR engine, for text recognition
     openOCR_results : tuple[list[str | float], float] = ["", 0.0], 0.0
 
     label_result: list[str | float] = ["", 0.0]
@@ -58,7 +59,7 @@ def execute(img_path: str) -> json:
 
     inference_results : str = ""
 
-    CLIENT, onnx_engine = initialize_engines(CLIENT, onnx_engine)
+    CLIENT, onnx_engine = initialize_engines()
 
     img_path = img_path
     model_id = 'iisc/10'
