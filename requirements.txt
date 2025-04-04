@@ -1,6 +1,7 @@
-openocr-python
-onnxruntime~=1.21.0
-inference-cli
+onnxruntime~=1.16.3
 pillow~=10.4.0
-OpenOCR~=0.1.0
+numpy~=1.26.4
+opencv-python~=4.6.0.66
+openocr-python~=0.0.9
+inference-cli~=0.45.0
 pandas~=2.2.3
