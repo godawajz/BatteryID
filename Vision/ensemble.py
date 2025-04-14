@@ -6,6 +6,7 @@ from openocr import OpenOCR
 import onnxruntime as onnx
 from difflib import SequenceMatcher
 import results_cleanup as rc
+import location_processing as lp
 import ast
 import json
 
@@ -39,11 +40,13 @@ def send_image_label(onnx_engine : OpenOCR, img_path : str) -> tuple[list[str | 
     return results2, elapse
 
 
-def make_JSON(battery_type: str, label_result: str, confidence: float) -> json:
+def make_JSON(battery_type: str, label_result: str, confidence: float, locations: list[str], instructions: str) -> json:
     prediction = {
         "battery_class": battery_type,
         "label_result": label_result,
-        "confidence": confidence
+        "confidence": confidence,
+        "locations": locations,
+        instructions: instructions
     }
     return json.dumps(prediction)
 
@@ -68,7 +71,7 @@ def execute(img_path: str) -> json:
 
     label_result, time = openOCR_results
 
-    return make_JSON(inference_results, label_result[0], round(label_result[1], 2))
+    return make_JSON(inference_results, label_result[0], round(label_result[1], 2), lp.get_location_dummy(label_result[0]), lp.get_instructions(label_result[0]))
 
 
 def main():
